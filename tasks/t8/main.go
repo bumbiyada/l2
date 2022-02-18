@@ -1,37 +1,71 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
+	"os"
+	"os/exec"
+	"os/signal"
+	"strings"
 	"sync"
 )
 
 // main listener of all things
 func event_listener() {
+	log.Println("You are now in shell")
 	var tmp string
-	var (
-		command string
-		arg     string
-	)
+	var arr []string
+	scanner := bufio.NewScanner(os.Stdin)
 	for {
-		n, err := fmt.Scanln(&tmp)
-		//r := strings.NewReader("5 true gophers")
-		//n, err := fmt.Fscanf(r, "%s %s", &command, &arg)
-		if err != nil {
-			log.Println("error while getting input")
-			continue
-		}
-		tmp = command + arg
-		fmt.Println(n, "\n", tmp)
-		if tmp == "exit" {
-			fmt.Println("EXITED ")
+		fmt.Print(">>>")
+		scanner.Scan()
+		tmp = scanner.Text()
+		arr = strings.Split(tmp, " ")
+		if arr[0] == "exit" || arr[0] == "exit()" || arr[0] == "q!" {
+			fmt.Println("Exiting Succesfully")
 			return
 		}
+		if arr[0] == "help" {
+			help()
+			continue
+		}
+		if arr[0] == "cd" && len(arr) == 2 {
+			os.Chdir(arr[1])
+		} else {
+			execute(arr)
+		}
+
 	}
+}
+func execute(arr []string) {
+	name := arr[0]
+	args := arr[1:]
+	cmd := exec.Command(name, args...)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	if err != nil {
+		log.Println("Error while executing program")
+	}
+
+}
+func aboba() {
+	signal.Ignore(os.Interrupt)
+}
+
+func help() {
+	fmt.Println(
+		`------------------------------------Go SHELL------------------------------------
+-USAGE:
+	- type command to execute it
+	- type exit | exit() | q! to exit`)
 }
 
 // main function
 func main() {
+	aboba()
 	var wg sync.WaitGroup
 	wg.Add(1)
 	go func() {

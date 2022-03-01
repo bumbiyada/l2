@@ -5,9 +5,14 @@ import (
 	"log"
 )
 
-type data_to_db struct {
-	user_id string
-	date    string
+type Data_to_db struct {
+	User_id  string
+	Name     string
+	Date     string
+	Mode     string
+	Set_name string
+	Set_date string
+	Set_user string
 }
 
 func Based() {

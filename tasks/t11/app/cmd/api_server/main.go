@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log"
 	"os"
 	"os/signal"
 	"sync"
@@ -12,23 +13,24 @@ import (
 )
 
 func main() {
-	based.Based()
+	log.Println("\t[APP] STARTED")
 	var (
 		wg         sync.WaitGroup
-		http_to_db = make(chan based.http_to_db, 1)
+		http_to_db = make(chan based.Data_to_db, 1)
 		db_to_http = make(chan []byte, 1)
 	)
 	ctx, cancel := context.WithCancel(context.Background())
+	ctx2, cancel2 := context.WithCancel(context.Background())
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		data.Db_handler(ctx, http_to_db, db_to_http)
+		data.DB_handler(ctx, http_to_db, db_to_http)
 	}()
 	//based.Based()
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		httplistener.HttpListener(ctx, http_to_db, db_to_http)
+		httplistener.HttpListener(ctx2, http_to_db, db_to_http)
 	}()
 	// exit
 	func(cancel context.CancelFunc) {
@@ -36,6 +38,7 @@ func main() {
 		signal.Notify(sig, os.Interrupt)
 		<-sig
 		cancel()
+		cancel2()
 	}(cancel)
 	wg.Wait()
 }

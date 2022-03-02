@@ -57,7 +57,7 @@ func main() {
 	address = net.JoinHostPort(host, port)
 	ctx, cancel := context.WithCancel(context.Background())
 	fmt.Printf("Trying to connect this address = %s | network = %s | timeout = %v\n", address, network, *duration)
-	//
+	// launching app
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
@@ -84,6 +84,7 @@ func main() {
 	wg.Wait()
 }
 
+//deprecated function
 func f1(network, address string, TimeOut time.Duration) {
 	conn, err := net.DialTimeout(network, address, TimeOut)
 	if err != nil {
@@ -123,6 +124,8 @@ func connect(ctx context.Context, network, address string, t time.Duration) (con
 		}
 	}
 }
+
+//main function of app
 func f2(ctx context.Context, network, address string, t time.Duration) {
 	conn, err := connect(ctx, network, address, t)
 	if err != nil {

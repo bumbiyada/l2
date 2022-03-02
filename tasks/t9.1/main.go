@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -23,21 +24,20 @@ func GetFilePath(outputDirectory string, fileName string) (filePath string) {
 		fileName = "index.html"
 	}
 	filePath = path.Join(outputDirectory, fileName)
-	//log.Println(filePath)
 	if filePath == "." {
 		filePath = "index.html"
 	}
 	hasSuffix := regexp.MustCompile(`[.][a-z]{2,}$`)
 	if !hasSuffix.Match([]byte(filePath)) {
-		//filePath = path.Join(filePath, ".html")
 		filePath = filePath + ".html"
 	}
-	//log.Println(filePath)
 	if strings.HasSuffix(filePath, "/") || strings.HasSuffix(filePath, `\`) {
 		filePath = filePath + "index.html"
 	}
 	return filePath
 }
+
+//create dir
 func createDir(url *url.URL) {
 	// MAKE Directory for file
 	dirName := path.Join(url.Host, url.Path)
@@ -77,7 +77,8 @@ func fetch(depth int, urlname string, fileName string, outputDirectory string) e
 		return err
 	}
 	defer resp.Body.Close()
-	// if recursion == false or this is leaf then only store data in file, else parse urls, and recurrently get all data
+
+	// if this is leaf, then just get file, else read file and try replace url in []byte
 	if depth == 0 {
 		_, err = io.Copy(out, resp.Body)
 		if err != nil {
@@ -140,20 +141,19 @@ func fetch(depth int, urlname string, fileName string, outputDirectory string) e
 	return nil
 }
 
-// outputDirectory, path.Base(u.Path), u.String()
 func main() {
-
-	// get some info from flags
-	// our params -- -r (Reccurently) and set depth of recusion
-	var rawurl string = "http://strajnic.net"
-
-	//var name string = "index.html"
+	//flags
+	rec_depth := *flag.Int("r", 1, "reccursion depth")
+	base_path := *flag.String("o", ".", "set output dir, default is current '.'")
+	flag.Parse()
+	// parsing url
+	rawurl := flag.Arg(0)
 	url, err := url.Parse(rawurl)
-	outputdir := "."
+	//starting fetching
 	wg.Add(1)
 	go func(wg *sync.WaitGroup) {
 		defer wg.Done()
-		err = fetch(1, url.String(), path.Base(url.Path), outputdir)
+		err = fetch(rec_depth, url.String(), path.Base(url.Path), base_path)
 		if err != nil {
 			log.Println(err)
 		}

@@ -31,7 +31,7 @@ func HttpListener(ctx context.Context, http_to_db chan based.Data_to_db, db_to_h
 			name := r.Form.Get("name")
 			if user == "" || date == "" || name == "" {
 				log.Println("WRONG REQUEST, no user/date/name", user, date, name)
-				fmt.Fprintf(w, "%s", `"error" : 400`)
+				fmt.Fprintf(w, "%s", `{"error" : 400}`)
 				return
 			}
 			b.User_id = user
@@ -49,7 +49,7 @@ func HttpListener(ctx context.Context, http_to_db chan based.Data_to_db, db_to_h
 				set_name := r.Form.Get("set_name")
 				if set_date == "" || set_name == "" || set_user == "" {
 					log.Println("wrong request in update, no user/name/date", set_user, set_name, set_date)
-					fmt.Fprintf(w, "%s", `"error" : 400`)
+					fmt.Fprintf(w, "%s", `{"error" : 400}`)
 					return
 				}
 				log.Println("updating event", r.Form)
@@ -68,7 +68,7 @@ func HttpListener(ctx context.Context, http_to_db chan based.Data_to_db, db_to_h
 				fmt.Fprintf(w, "%s", res)
 			} else {
 				log.Println("Wrong adress of POST request, something else")
-				fmt.Fprintf(w, "%s", `"error" : 500`)
+				fmt.Fprintf(w, "%s", `{"error" : 500}`)
 			}
 		} else if r.Method == "GET" {
 			//log.Println(r.URL.Fragment)
@@ -81,7 +81,7 @@ func HttpListener(ctx context.Context, http_to_db chan based.Data_to_db, db_to_h
 			b.Date = date
 			if user == "" || date == "" {
 				log.Println("WRONG REQUEST of Get, no user/name/date", user, date)
-				fmt.Fprintf(w, "%s", `"error" : 400`)
+				fmt.Fprintf(w, "%s", `{"error" : 400}`)
 				return
 			}
 			if r.URL.Path == "/events_for_day" {
@@ -101,26 +101,13 @@ func HttpListener(ctx context.Context, http_to_db chan based.Data_to_db, db_to_h
 				fmt.Fprintf(w, "%s", res)
 			} else {
 				log.Println("wrong Get Method")
-				fmt.Fprintf(w, "%s", `"error" : 500`)
+				fmt.Fprintf(w, "%s", `{"error" : 500}`)
 			}
 		} else {
 			log.Println("wrong method")
 		}
 	})
 
-	// if r.Method == http.MethodPost {
-
-	// 	r.ParseForm()
-	// 	log.Printf("[HTTP] GET REQUEST FROM CLIENT %s", r.Form)
-	// 	//answer
-	// 	fmt.Fprintf(w, "%s", "response")
-
-	// } else {
-	// 	log.Println("NOT POST REQUEST")
-	// 	fmt.Fprintf(w, "%s", "WHO ARE YOU ?")
-	// }
-
-	//log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%s", cfg.HTTP_HOST, cfg.HTTP_PORT), nil))
 	go func() {
 		err := server.ListenAndServe()
 		based.CheckErr(err, "error while listening server")

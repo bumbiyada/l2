@@ -97,7 +97,7 @@ func DB_handler(ctx context.Context, http_to_db chan based.Data_to_db, db_to_htt
 					Date_2, err := time.Parse("2006-01-02", o.Date)
 					if err != nil {
 						log.Println("error while parsing date")
-						db_to_http <- []byte(`"error": 400`)
+						db_to_http <- []byte(`{"error": 400}`)
 						break
 					}
 					Date_2 = Date_2.Add(time.Hour * 24 * time.Duration(cnst))
@@ -106,7 +106,7 @@ func DB_handler(ctx context.Context, http_to_db chan based.Data_to_db, db_to_htt
 					err = db.Select(&events, "SELECT user_id, name, event_date FROM event WHERE user_id = $1 AND event_date BETWEEN $2 AND $3", o.User_id, o.Date, Date_2.String()[0:10])
 					based.CheckErr(err, "error while selectind data from db")
 					if len(events) == 0 {
-						db_to_http <- []byte(`"error": 404`)
+						db_to_http <- []byte(`{"error": 404}`)
 						break
 					}
 					ga := good_answer{events}

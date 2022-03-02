@@ -10,11 +10,13 @@ import (
 	"strconv"
 )
 
+// whether string is numeric or not
 func isNumeric(s string) bool {
 	_, err := strconv.ParseFloat(s, 64)
 	return err == nil
 }
 
+// if []string contains string or not
 func contains(s []string, e string) bool {
 	for _, a := range s {
 		if a == e {
@@ -23,6 +25,8 @@ func contains(s []string, e string) bool {
 	}
 	return false
 }
+
+//read file
 func read_file(path string, unique *bool) []string {
 	result := []string{}
 	file, err := os.Open(path)
@@ -50,6 +54,8 @@ func read_file(path string, unique *bool) []string {
 	}
 	return result
 }
+
+// sorting file
 func sort_file(array []string, numeric *bool) []string {
 	if *numeric == true {
 		numbers := []float64{}
@@ -76,6 +82,7 @@ func sort_file(array []string, numeric *bool) []string {
 
 }
 
+// printing file
 func print_file(array []string, reverse *bool) {
 	if *reverse == false {
 		fmt.Println("It`s NOT reversed")
@@ -89,7 +96,10 @@ func print_file(array []string, reverse *bool) {
 		}
 	}
 }
+
+//main function
 func main() {
+	//flags
 	showHelp := flag.Bool("h", false, "Show help message.")
 	reverse := flag.Bool("r", false, "Sorting Desc")
 	numeric := flag.Bool("n", false, "Sorting lines like numbers, not like strings")
@@ -100,7 +110,9 @@ func main() {
 		flag.PrintDefaults()
 		return
 	}
+	//arg
 	filepath := flag.Arg(0)
+	//read file, sort and print
 	obj := read_file(filepath, unique)
 	obj = sort_file(obj, numeric)
 	print_file(obj, reverse)

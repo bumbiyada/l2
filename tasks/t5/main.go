@@ -63,6 +63,7 @@ func print_before(arr []string, n int, cfg *cfg) {
 	}
 }
 
+//printing result
 func print_result(text string, n int, flag bool) {
 	if flag == true {
 		fmt.Printf("%d: %s\n", n, text)
@@ -71,6 +72,7 @@ func print_result(text string, n int, flag bool) {
 	}
 }
 
+// finding result
 func find_result(txt, query string, cfg *cfg) (result bool) {
 	if cfg.ignore == true {
 		txt = strings.ToLower(txt)
@@ -82,6 +84,8 @@ func find_result(txt, query string, cfg *cfg) (result bool) {
 		return txt == query
 	}
 }
+
+//main function of searching
 func readFile(wg *sync.WaitGroup, path string, cfg *cfg) {
 	defer wg.Done()
 	// open file
@@ -93,10 +97,11 @@ func readFile(wg *sync.WaitGroup, path string, cfg *cfg) {
 	}
 	// new scanner
 	scanner := bufio.NewScanner(file)
-	// reading file
-	// HERE IS MAGIC
+	// READING FILE
+	//
 	// case we have no counter
 	if cfg.count < 0 {
+		// case we have to invert all  stuff
 		if cfg.invert == true {
 			for i := 1; scanner.Scan(); i++ {
 				tmp := scanner.Text()
@@ -130,6 +135,7 @@ func readFile(wg *sync.WaitGroup, path string, cfg *cfg) {
 	} else {
 		// case we have counter
 		cnt := cfg.count
+		// case we have to invert
 		if cfg.invert == true {
 			for i := 1; scanner.Scan(); i++ {
 				tmp := scanner.Text()
@@ -171,6 +177,7 @@ func readFile(wg *sync.WaitGroup, path string, cfg *cfg) {
 }
 
 func main() {
+	//flags of application
 	f_after := flag.Int("A", 0, "After")
 	f_before := flag.Int("B", 0, "Before")
 	f_context := flag.Int("C", 0, "Context A + B")
@@ -181,14 +188,16 @@ func main() {
 	f_line_num := flag.Bool("n", false, "Line numeration")
 
 	flag.Parse()
+	// args of application
 	query = flag.Arg(0)
 	root = flag.Arg(1)
+	// get all flags and put them in struct
 	cfg := NewCfg(*f_after, *f_before, *f_context, *f_count, *f_ignore_case, *f_invert, *f_fixed, *f_line_num)
 	if query == "" || root == "" {
 		fmt.Println("No arguments are passed\nPass query string in first arg and dir. in seccond")
 		os.Exit(0)
 	}
-	//
+	// starting searching in files
 	filepath.Walk(root, func(path string, file os.FileInfo, err error) error {
 		if !file.IsDir() {
 			wg.Add(1)

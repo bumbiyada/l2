@@ -6,13 +6,13 @@ import (
 	"log"
 	"os"
 	"os/exec"
-	"os/signal"
 	"strings"
 	"sync"
 )
 
 // main listener of all things
 func event_listener() {
+	//starting shell
 	log.Println("You are now in shell")
 	var tmp string
 	var arr []string
@@ -22,6 +22,7 @@ func event_listener() {
 		scanner.Scan()
 		tmp = scanner.Text()
 		arr = strings.Split(tmp, " ")
+		// if tree
 		if arr[0] == "exit" || arr[0] == "exit()" || arr[0] == "q!" {
 			fmt.Println("Exiting Succesfully")
 			return
@@ -38,6 +39,8 @@ func event_listener() {
 
 	}
 }
+
+// execute applications
 func execute(arr []string) {
 	name := arr[0]
 	args := arr[1:]
@@ -51,10 +54,8 @@ func execute(arr []string) {
 	}
 
 }
-func aboba() {
-	signal.Ignore(os.Interrupt)
-}
 
+// help function
 func help() {
 	fmt.Println(
 		`------------------------------------Go SHELL------------------------------------
@@ -65,9 +66,10 @@ func help() {
 
 // main function
 func main() {
-	aboba()
+
 	var wg sync.WaitGroup
 	wg.Add(1)
+	//starting listener
 	go func() {
 		defer wg.Done()
 		event_listener()

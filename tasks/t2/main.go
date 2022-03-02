@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-// first variation, works different , multiplies next char NOT prev.
+// DEPRECATED first variation, works different , multiplies next char NOT prev
 func unpack_str(str string) string {
 	res := []rune{}
 	tmp := []rune(str)
@@ -80,8 +80,6 @@ func unpack_str2(str string) string {
 func main() {
 
 	str := "a4bc2d5e"
-	// res := unpack_str(str)
-	// fmt.Println(res)
 	res := unpack_str2(str)
 	fmt.Println(res)
 }

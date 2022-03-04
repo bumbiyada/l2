@@ -15,6 +15,7 @@ type walletFacade struct {
 	ledger       *ledger
 }
 
+// methods of facade
 func newWalletFacade(accountID string, code int) *walletFacade {
 	fmt.Println("Starting create account")
 	walletFacacde := &walletFacade{
@@ -28,6 +29,7 @@ func newWalletFacade(accountID string, code int) *walletFacade {
 	return walletFacacde
 }
 
+// methods of facade
 func (w *walletFacade) addMoneyToWallet(accountID string, securityCode int, amount int) error {
 	fmt.Println("Starting add money to wallet")
 	err := w.account.checkAccount(accountID)
@@ -44,6 +46,7 @@ func (w *walletFacade) addMoneyToWallet(accountID string, securityCode int, amou
 	return nil
 }
 
+// methods of facade
 func (w *walletFacade) deductMoneyFromWallet(accountID string, securityCode int, amount int) error {
 	fmt.Println("Starting debit money from wallet")
 	err := w.account.checkAccount(accountID)

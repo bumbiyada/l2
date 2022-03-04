@@ -2,25 +2,6 @@ package main
 
 import "fmt"
 
-//builder interface
-type iBuilder interface {
-	setWindowType()
-	setDoorType()
-	setNumFloor()
-	getHouse() house
-}
-
-func getBuilder(builderType string) iBuilder {
-	if builderType == "normal" {
-		return &normalBuilder{}
-	}
-
-	if builderType == "igloo" {
-		return &iglooBuilder{}
-	}
-	return nil
-}
-
 // builder
 type normalBuilder struct {
 	windowType string
@@ -88,6 +69,30 @@ type house struct {
 	windowType string
 	doorType   string
 	floor      int
+}
+
+//
+//
+//
+
+//builder interface, here are all stadies of creation of obj
+type iBuilder interface {
+	setWindowType()
+	setDoorType()
+	setNumFloor()
+	getHouse() house
+}
+
+// director
+func getBuilder(builderType string) iBuilder {
+	if builderType == "normal" {
+		return &normalBuilder{}
+	}
+
+	if builderType == "igloo" {
+		return &iglooBuilder{}
+	}
+	return nil
 }
 
 // director
